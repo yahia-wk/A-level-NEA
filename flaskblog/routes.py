@@ -8,7 +8,7 @@ posts = [
     {
         'author': 'Yahia Abdelkader',
         'title': 'Blog Post 1',
-        'content': 'First post content',
+        'content': 'www.youtube.com',
         'date_posted': 'April 20, 2018'
     },
       {
@@ -21,6 +21,7 @@ posts = [
 
 @app.route("/")
 @app.route("/home")
+@login_required
 def home():
     return render_template('home.html', posts=posts)
 
@@ -57,7 +58,11 @@ def login():
             login_user(user, remember=form.remember.data)
             flash(f'Welcome back {user.username}!', 'success')
             next_page = request.args.get('next')
-            return redirect ('account') if next_page else redirect(url_for('home'))
+            if next_page[1:] == 'home':
+                return redirect(url_for('home'))
+            elif next_page[1:] == 'account':
+                return redirect(url_for('account'))
+            
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', title='Login', form=form)
